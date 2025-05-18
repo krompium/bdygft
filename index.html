@@ -1,0 +1,246 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIEE 20 TAHUN YAA KAK 😙</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="retro-theme">
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-hearts">
+            <div class="loading-heart"></div>
+            <div class="loading-heart"></div>
+            <div class="loading-heart"></div>
+        </div>
+        <div class="loading-text">TUNGGU SEBENTAR YA MANIEZZ...</div>
+        <div class="loading-progress">
+            <div class="loading-progress-bar" id="loadingBar"></div>
+        </div>
+    </div>
+    
+    <!-- Background Elements -->
+    <div class="bg-gradient"></div>
+    <div class="grid-pattern"></div>
+    
+    <!-- CRT Effects -->
+    <div class="scanline"></div>
+    <div class="crt-effect"></div>
+    <div class="arcade-cabinet"></div>
+    
+    <!-- Floating Hearts -->
+    <div class="hearts-decoration" id="hearts"></div>
+    
+    <!-- Audio Controls -->
+    <div class="audio-controls">
+        <div class="audio-btn" id="audioToggle"><i class="bi bi-volume-up-fill"></i></div>
+    </div>
+    <audio id="bgMusic" preload="auto">
+        <source src="audio/married-life-.mp3" type="audio/mp3">
+    </audio>
+    
+    <!-- Screen 0: GameBoy Menu -->
+    <div class="screen gameboy-container" id="gameboyScreen">
+        <div class="gameboy">
+            <div class="gameboy-screen-container">
+                <div class="gameboy-screen">
+                    <h1 class="gameboy-title">HAPPY BIRTHDAY!</h1>
+                    <div class="gameboy-menu">
+                        <div class="gameboy-menu-item" id="playDinoBtn">GAME</div>
+                        <div class="gameboy-menu-item" id="playMessageBtn">CERAMAH</div>
+                        <div class="gameboy-menu-item" id="playGalleryBtn">DUMP</div>
+                    </div>
+                </div>
+            </div>
+            <div class="gameboy-controls">
+                <div class="gameboy-dpad">
+                    <div class="dpad-button dpad-up"></div>
+                    <div class="dpad-button dpad-right"></div>
+                    <div class="dpad-button dpad-down"></div>
+                    <div class="dpad-button dpad-left"></div>
+                    <div class="dpad-button dpad-center"></div>
+                </div>
+                <div class="gameboy-action-buttons">
+                    <div class="action-button">B</div>
+                    <div class="action-button">A</div>
+                </div>
+            </div>
+            <div class="gameboy-start-select">
+                <div class="start-select-button">SELECT</div>
+                <div class="start-select-button" id="startButton">START</div>
+            </div>
+            <div class="gameboy-logo">UNTUK JINAN</div>
+        </div>
+    </div>
+    
+    <!-- Screen 1: Chrome Dino Game -->
+    <div class="screen game-container" id="gameScreen">
+        <h1 class="neon-title">BUKAN ROBLOX</h1>
+        
+        <!-- Dino Game -->
+        <div class="dino-game-container">
+            <div id="dinoIframe" class="dino-game-iframe"></div>
+            
+            <!-- Fallback Dino Game if Chrome Dino can't be loaded -->
+            <div class="dino-fallback" id="fallbackGame">
+                <div class="dino" id="dino"></div>
+                <div class="cactus" id="cactus"></div>
+                <div class="ground"></div>
+                <div class="score" id="score">Yippiee: 0</div>
+                <div class="game-over-text" id="gameOver">
+                    <h2>YAH KALAH</h2>
+                    <p>GIMANAA SII</p>
+                    <div class="motivational-message" id="motivationalMessage">
+                        GAPAPA GAPAPA MASIH KELIATAN CANTIK KOK 😘
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <p class="subtitle">Press SPACE to jump or tap dino</p>
+        
+        <div class="nav-buttons">
+            <button class="btn" id="resetGameBtn"><i class="bi bi-arrow-repeat"></i> RESET</button>
+            <button class="btn" id="nextFromGameBtn">NEXT <i class="bi bi-arrow-right"></i></button>
+        </div>
+    </div>
+    
+    <!-- Screen 2: Retro Message in GameBoy Form -->
+    <div class="screen message-container" id="messageScreen">
+        <div class="gameboy">
+            <div class="gameboy-screen-container">
+                <div class="gameboy-screen">
+                    <h2 class="gameboy-title">SINI AKU CERAMAHIN DULU</h2>
+                    <div class="typing-text" id="typingText"></div>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="progress-container" style="padding: 0 20px; margin-top: 20px;">
+                <div class="progress-bar" id="messageProgress"></div>
+            </div>
+            
+            <div class="gameboy-controls" style="justify-content: center; margin-top: 20px;">
+                <div class="nav-buttons">
+                    <button class="btn" id="skipMsgBtn">SKIP</button>
+                    <button class="btn" id="nextFromMessageBtn">NEXT <i class="bi bi-arrow-right"></i></button>
+                </div>
+            </div>
+            
+            <div class="gameboy-logo">DARI IKROM</div>
+        </div>
+    </div>
+    
+    <!-- Screen 3: Gallery Slideshow -->
+    <div class="screen gallery-container" id="galleryScreen">
+        <h1 class="neon-title">MEMORIES GALLERY</h1>
+        
+        <div class="gallery-slide" id="slide1">
+            <div class="gallery-img">
+                <div class="placeholder-img">
+                    <img src="img/img1.jpg" alt="foto 1" srcset="">
+                </div>
+            </div>
+            <h3 class="gallery-title">SWEET MEMORIES</h3>
+        </div>
+        
+        <div class="gallery-slide" id="slide2">
+            <div class="gallery-img">
+                <div class="placeholder-img">
+                    <img src="img/img2.jpg" alt="foto 2" srcset="">
+                </div>
+            </div>
+            <h3 class="gallery-title">BIRTHDAY WISHES</h3>
+        </div>
+        
+        <div class="gallery-slide" id="slide3">
+            <div class="gallery-img">
+                <div class="placeholder-img">
+                    <video class="placeholder-video" src="img/video1.mp4" controls preload="metadata"></video>
+                </div>
+            </div>
+            <h3 class="gallery-title">SPECIAL MOMENTS</h3>
+        </div>
+        
+        <div class="gallery-slide" id="slide4">
+            <div class="gallery-img">
+                <div class="placeholder-img">
+                    <img src="img/img4.jpg" alt="foto 4" srcset="">
+                </div>
+            </div>
+            <h3 class="gallery-title">UNFORGETTABLE TIMES</h3>
+        </div>
+
+        <div class="gallery-slide" id="slide5">
+            <div class="gallery-img">
+                <div class="placeholder-img">
+                    <img src="img/img5.jpg" alt="foto 5" srcset="">
+                </div>
+            </div>
+            <h3 class="gallery-title">BEST FRIENDS</h3>
+        </div>
+
+        <div class="gallery-slide" id="slide6">
+            <div class="gallery-img">
+                <div class="placeholder-img">
+                    <video class="placeholder-video" src="img/video2.mp4" controls preload="metadata"></video>
+                </div>
+            </div>
+            <h3 class="gallery-title">GOOD TIMES</h3>
+        </div>
+
+        <div class="gallery-slide" id="slide7">
+            <div class="gallery-img">
+                <div class="placeholder-img">
+                    <img src="img/img7.jpg" alt="foto 7" srcset="">
+                </div>
+            </div>
+            <h3 class="gallery-title">BEST FRIENDS</h3>
+        </div>
+
+        <div class="gallery-slide" id="slide8">
+            <div class="gallery-img">
+                <div class="placeholder-img">
+                    <img src="img/img8.jpg" alt="foto 8" srcset="">
+                </div>
+            </div>
+            <h3 class="gallery-title">BEST FRIENDS</h3>
+        </div>
+
+        <div class="gallery-slide" id="slide9">
+            <div class="gallery-img">
+                <div class="placeholder-img">
+                    <img src="img/img9.jpg" alt="foto 9" srcset="">
+                </div>
+            </div>
+            <h3 class="gallery-title">BEST FRIENDS</h3>
+        </div>
+
+        <div class="gallery-slide" id="slide10">
+            <div class="gallery-img">
+                <div class="placeholder-img">
+                    <video class="placeholder-video" src="img/video3.mp4" controls preload="metadata"></video>
+                </div>
+            </div>
+            <h3 class="gallery-title">BEST FRIENDS</h3>
+        </div>
+        
+        
+    <!-- Tombol Navigasi -->
+        <div class="gallery-nav-wrapper">
+            <button class="btn gallery-prev" id="prevBtn"><i class="bi bi-arrow-left"></i></button>
+            <button class="btn gallery-home" id="homeFromGalleryBtn"><i class="bi bi-house-fill"></i> HOME</button>
+            <button class="btn gallery-next" id="nextBtn"><i class="bi bi-arrow-right"></i></button>
+        </div>
+
+    
+    </div>
+    
+    <script src="script.js"></script>
+</body>

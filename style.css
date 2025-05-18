@@ -1,0 +1,884 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Press Start 2P', cursive;
+}
+
+body {
+    overflow-x: hidden;
+    background-color: #000;
+    position: relative;
+}
+
+/* Background with retro valentine colors */
+.bg-gradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a0415 0%, #3e1c33 50%, #1a0415 100%);
+    z-index: -2;
+}
+
+/* Grid Pattern - changed to pink hearts */
+.grid-pattern {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(255, 105, 180, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 105, 180, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    perspective: 500px;
+    transform-style: preserve-3d;
+    animation: gridMove 20s linear infinite;
+    z-index: -1;
+}
+
+@keyframes gridMove {
+    0% { transform: translateZ(0) translateY(0); }
+    100% { transform: translateZ(0) translateY(500px); }
+}
+
+.screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.8s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+    padding: 20px;
+}
+
+/* GameBoy Container - Valentine Edition */
+.gameboy-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    transition: opacity 0.8s ease;
+}
+
+.gameboy {
+    width: 350px;
+    height: 580px;
+    background-color: #ff9999;
+    border-radius: 10px 10px 50px 10px;
+    position: relative;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+}
+
+.gameboy-screen-container {
+    width: 280px;
+    height: 250px;
+    background-color: #232323;
+    margin: 30px auto 20px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.gameboy-screen {
+    width: 100%;
+    height: 100%;
+    background-color: #3e1c33;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.gameboy-title {
+    color: #ff6b6b;
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.gameboy-menu {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.gameboy-menu-item {
+    background-color: #611845;
+    color: #ff6b6b;
+    padding: 8px;
+    margin: 8px 0;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 10px;
+    transition: all 0.3s;
+}
+
+.gameboy-menu-item:hover {
+    background-color: #ff6b6b;
+    color: #611845;
+}
+
+.gameboy-controls {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.gameboy-dpad {
+    width: 100px;
+    height: 100px;
+    position: relative;
+}
+
+.dpad-button {
+    background-color: #e05771;
+    position: absolute;
+    cursor: pointer;
+}
+
+.dpad-up {
+    width: 30px;
+    height: 30px;
+    top: 0;
+    left: 35px;
+    border-radius: 5px 5px 0 0;
+}
+
+.dpad-right {
+    width: 30px;
+    height: 30px;
+    top: 35px;
+    right: 0;
+    border-radius: 0 5px 5px 0;
+}
+
+.dpad-down {
+    width: 30px;
+    height: 30px;
+    bottom: 0;
+    left: 35px;
+    border-radius: 0 0 5px 5px;
+}
+
+.dpad-left {
+    width: 30px;
+    height: 30px;
+    top: 35px;
+    left: 0;
+    border-radius: 5px 0 0 5px;
+}
+
+.dpad-center {
+    width: 30px;
+    height: 30px;
+    top: 35px;
+    left: 35px;
+}
+
+.gameboy-action-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.action-button {
+    width: 40px;
+    height: 40px;
+    background-color: #e05771;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    cursor: pointer;
+    transform: rotate(-30deg);
+}
+
+.gameboy-start-select {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.start-select-button {
+    width: 60px;
+    height: 15px;
+    background-color: #e05771;
+    border-radius: 10px;
+    transform: rotate(-25deg);
+    cursor: pointer;
+}
+
+.gameboy-logo {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #611845;
+    width: 100%;
+    text-align: center;
+}
+
+.game-container {
+    z-index: 3;
+    transform: translateX(0);
+}
+
+/* Message container styled as GameBoy */
+.message-container {
+    z-index: 2;
+    transform: translateX(100vw);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.message-screen {
+    width: 100%;
+    height: 100%;
+    background-color: #3e1c33;
+    padding: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.gallery-container {
+    z-index: 1;
+    transform: translateX(200vw);
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.typing-text {
+    height: 100%;
+    margin: 10px 0;
+    padding: 5px;
+    text-align: left;
+    line-height: 1.8;
+    color: #ff6b6b;
+    text-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+    font-size: 12px;
+    overflow-y: auto;
+}
+
+.btn {
+    background: #611845;
+    color: #ff6b6b;
+    padding: 12px 24px;
+    border: 2px solid #e05771;
+    cursor: pointer;
+    margin: 10px;
+    font-size: 14px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.1) 100%
+    );
+    transform: rotate(45deg);
+    z-index: 1;
+    transition: all 0.3s;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    background: #e05771;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(255, 107, 107, 0.7);
+}
+
+.btn:hover::before {
+    animation: shine 0.5s forwards;
+}
+
+@keyframes shine {
+    0% { left: -50%; }
+    100% { left: 100%; }
+}
+
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 260px;
+    margin-top: 10px;
+}
+
+.message-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* Chrome Dino Game Integration */
+.dino-game-container {
+    width: 600px;
+    height: 300px;
+    position: relative;
+    border: 4px solid #e05771;
+    box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+    overflow: hidden;
+    background-color: black;
+    margin-bottom: 20px;
+}
+
+.dino-game-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: white;
+    z-index: 10;
+}
+
+/* Valentine-themed Gallery */
+.gallery-slide {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 80%;
+    max-width: 800px;
+    height: 400px;
+    opacity: 0;
+    transition: opacity 1s ease, transform 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.gallery-slide.active {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.gallery-img {
+    width: 100%;
+    height: 300px;
+    margin-bottom: 20px;
+    border: 4px solid #e05771;
+    box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background: rgba(62, 28, 51, 0.5);
+}
+
+.gallery-title {
+    color: #ff6b6b;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(255, 107, 107, 0.7);
+    letter-spacing: 2px;
+}
+
+.scanline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: rgba(255, 107, 107, 0.1);
+    animation: scanline 8s linear infinite;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.crt-effect {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.2) 50%);
+    background-size: 100% 4px;
+    z-index: 99;
+    pointer-events: none;
+    opacity: 0.15;
+}
+
+@keyframes scanline {
+    0% { top: -100%; }
+    100% { top: 100%; }
+}
+
+.arcade-cabinet {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 97;
+}
+
+.arcade-cabinet::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 10%;
+    height: 100%;
+    background: linear-gradient(to right, #000, transparent);
+}
+
+.arcade-cabinet::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 10%;
+    height: 100%;
+    background: linear-gradient(to left, #000, transparent);
+}
+
+.controls {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.control-btn {
+    background: #611845;
+    color: #ff6b6b;
+    border: 2px solid #e05771;
+    padding: 12px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+    transition: all 0.3s;
+}
+
+.control-btn:hover {
+    transform: scale(1.05);
+    background: #e05771;
+    box-shadow: 0 0 15px rgba(255, 107, 107, 0.8);
+}
+
+.placeholder-img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #ff6b6b;
+    font-size: 16px;
+    text-shadow: 0 0 5px rgba(255, 107, 107, 0.7);
+    background: linear-gradient(45deg, #3e1c33, #611845);
+    border: 2px solid #ff6b6b;
+}
+
+/* Title styling - Valentine theme */
+.neon-title {
+    font-size: 28px;
+    color: #ff6b6b;
+    text-shadow: 
+        0 0 5px rgba(255, 107, 107, 0.5),
+        0 0 10px rgba(255, 107, 107, 0.5),
+        0 0 20px rgba(255, 107, 107, 0.3);
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    color: #ff6b6b;
+    margin: 10px 0 20px;
+    text-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+    font-size: 14px;
+}
+
+/* Audio controls */
+.audio-controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.audio-btn {
+    background: rgba(0, 0, 0, 0.5);
+    color: #ff6b6b;
+    border: 2px solid #e05771;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+    transition: all 0.3s;
+}
+
+.audio-btn:hover {
+    transform: scale(1.1);
+}
+
+/* Dino Game Fallback */
+.dino-fallback {
+    position: relative;
+    width: 600px;
+    height: 300px;
+    border: 4px solid #e05771;
+    overflow: hidden;
+    background-color: #000;
+}
+
+.dino {
+    position: absolute;
+    bottom: 0;
+    left: 50px;
+    width: 60px;
+    height: 60px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><path fill="%23ff6b6b" d="M20,5h15v5h-5v5h-5v-5h-5V5z M15,10h-5v5H5v5h5v5h5v-5h5v-5h-5V10z M25,25h5v5h-5V25z M30,20h5v5h-5V20z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.cactus {
+    position: absolute;
+    bottom: 0;
+    right: -50px;
+    width: 30px;
+    height: 50px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 30"><path fill="%23e05771" d="M10,0v30h5v-5h5v-5h-5v-5h-5 M5,10h5v5H5v5h5v5H5v5h5V10z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.ground {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 5px;
+    background-color: #ff6b6b;
+    box-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+}
+
+.score {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #ff6b6b;
+    text-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+}
+
+.game-over-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ff6b6b;
+    text-align: center;
+    display: none;
+    text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+    z-index: 20;
+}
+
+.motivational-message {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #ffb6c1;
+    max-width: 300px;
+    text-align: center;
+}
+
+@keyframes dinoStand {
+    from { transform: translateY(0); }
+    to { transform: translateY(-2px); }
+}
+
+/* Make the dino animated */
+.dino {
+    animation: dinoStand 0.5s infinite alternate;
+}
+
+/* Skip button and progress bar */
+.skip-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    background: #611845;
+    color: #ff6b6b;
+    border: 2px solid #e05771;
+    border-radius: 5px;
+    padding: 6px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    z-index: 10;
+    box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+}
+
+.skip-btn:hover {
+    background: #e05771;
+    color: #fff;
+}
+
+/* Valentine heart decorations */
+.hearts-decoration {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 96;
+    overflow: hidden;
+}
+
+.heart {
+    position: absolute;
+    display: block;
+    width: 20px;
+    height: 20px;
+    opacity: 0.4;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill="%23ff6b6b" d="M10,4 C10,4 8.1,2 5.74,2 C3.38,2 1,3.55 1,6.73 C1,8.84 2.67,10.44 2.67,10.44 L10,18 L17.33,10.44 C17.33,10.44 19,8.84 19,6.73 C19,3.55 16.62,2 14.26,2 C11.9,2 10,4 10,4 Z"/></svg>');
+    background-size: contain;
+    animation: heartFloat 20s linear infinite;
+}
+
+@keyframes heartFloat {
+    0% {
+        transform: translateY(-100%) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.4;
+    }
+    90% {
+        opacity: 0.4;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Polaroid gallery style */
+.polaroid-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.polaroid {
+    background: #fff;
+    padding: 10px 10px 40px 10px;
+    width: 250px;
+    box-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
+    transform: rotate(-3deg);
+    transition: all 0.3s;
+}
+
+.polaroid:nth-child(even) {
+    transform: rotate(3deg);
+}
+
+.polaroid:hover {
+    transform: scale(1.05) rotate(0);
+    box-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+    z-index: 5;
+}
+
+.polaroid-img {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(45deg, #3e1c33, #611845);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff6b6b;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+}
+
+.polaroid-caption {
+    text-align: center;
+    font-size: 12px;
+    color: #333;
+}
+
+/* Heart cursor */
+body {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20"><path fill="%23ff6b6b" d="M10,4 C10,4 8.1,2 5.74,2 C3.38,2 1,3.55 1,6.73 C1,8.84 2.67,10.44 2.67,10.44 L10,18 L17.33,10.44 C17.33,10.44 19,8.84 19,6.73 C19,3.55 16.62,2 14.26,2 C11.9,2 10,4 10,4 Z"/></svg>'), auto;
+}
+
+/* Gallery animations for Polaroid view */
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.8) rotate(-10deg); }
+    to { opacity: 1; transform: scale(1) rotate(-3deg); }
+}
+
+.polaroid-gallery .polaroid {
+    animation: fadeInScale 0.5s forwards;
+    animation-delay: calc(var(--delay) * 0.1s);
+}
+
+/* Progress bar */
+.progress-container {
+    width: 100%;
+    height: 10px;
+    background-color: #611845;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 0 5px rgba(255, 107, 107, 0.3);
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #ff6b6b;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Loading Screen */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1a0415;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease;
+}
+
+.loading-hearts {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.loading-heart {
+    width: 30px;
+    height: 30px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path fill="%23ff6b6b" d="M10,4 C10,4 8.1,2 5.74,2 C3.38,2 1,3.55 1,6.73 C1,8.84 2.67,10.44 2.67,10.44 L10,18 L17.33,10.44 C17.33,10.44 19,8.84 19,6.73 C19,3.55 16.62,2 14.26,2 C11.9,2 10,4 10,4 Z"/></svg>');
+    background-size: contain;
+    margin: 0 5px;
+    animation: heartBeat 1s infinite alternate;
+}
+
+.loading-heart:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading-heart:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes heartBeat {
+    from { transform: scale(1); }
+    to { transform: scale(1.3); }
+}
+
+.loading-text {
+    color: #ff6b6b;
+    font-size: 18px;
+    text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+    margin-top: 20px;
+}
+
+.loading-progress {
+    width: 200px;
+    height: 10px;
+    background-color: #611845;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.loading-progress-bar {
+    height: 100%;
+    background-color: #ff6b6b;
+    width: 0%;
+    transition: width 3s ease;
+}
+
+/* style.css */
+.gallery-img video.placeholder-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.gallery-slide {
+  aspect-ratio: 4 / 3;
+}
+
+.gallery-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+
+.gallery-nav-wrapper {
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  z-index: 10;
+}
+
+.gallery-home {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
