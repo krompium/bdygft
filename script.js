@@ -280,16 +280,31 @@ function initGallery() {
 }
 
 function showSlide(index) {
-    // First hide all slides
-    slides.forEach(slide => {
-        slide.classList.remove('active');
-        slide.classList.remove('sliding-in');
-        slide.classList.remove('sliding-out');
+    // Pause all videos sebelum pindah slide
+    document.querySelectorAll('.gallery-slide video').forEach(video => {
+        video.pause();
+        video.currentTime = 0; // Reset ke awal (opsional)
     });
-    
-    // Add animation classes
-    slides[index].classList.add('active');
-    slides[index].classList.add('sliding-in');
+
+    // Sembunyikan semua slide
+    slides.forEach(slide => {
+        slide.classList.remove('active', 'sliding-in', 'sliding-out');
+    });
+
+    // Tampilkan slide saat ini
+    const current = slides[index];
+    current.classList.add('active', 'sliding-in');
+
+    // Jika ada video di dalam slide, autoplay
+    const video = current.querySelector('video');
+    if (video) {
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.log("Autoplay video gagal:", error);
+            });
+        }
+    }
 }
 
 function startSlideshow() {
