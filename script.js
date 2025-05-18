@@ -195,18 +195,15 @@ function showGameboyScreen() {
     galleryScreen.style.transform = 'translateX(300vw)';
     
     // Play background music
-    setTimeout(() => {
-        bgMusic.play().catch(error => {
-            console.log("Audio couldn't autoplay:", error);
+    startButton.addEventListener('click', () => {
+    goToGameScreen();
+        bgMusic.play().catch((e) => {
+            console.log("Autoplay error:", e);
         });
-    }, 1000);
+    });
 }
 
-bgMusic.addEventListener('ended', () => {
-  // pastikan file sudah selesai diputar
-  bgMusic.currentTime = 0;
-  bgMusic.play();
-});
+bgMusic.loop = true;
 
 function goToGameScreen() {
     gameboyScreen.style.transform = 'translateX(-100vw)';
@@ -306,6 +303,7 @@ function showSlide(index) {
         }
     }
 }
+
 
 function startSlideshow() {
     if (isSlideShowActive) return;
