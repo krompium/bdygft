@@ -228,21 +228,22 @@ function goToMessageScreen() {
 }
 
 function startTypingMessage() {
-    // Clear any existing interval
     if (typingInterval) clearInterval(typingInterval);
-    
+
     typingInterval = setInterval(() => {
         if (charIndex < message.length) {
             typingText.innerHTML += message.charAt(charIndex);
             charIndex++;
-            
-            // Update progress bar
+
             const progressPercentage = (charIndex / message.length) * 100;
             messageProgress.style.width = `${progressPercentage}%`;
+
+            // SCROLL OTOMATIS KE BAWAH
+            typingText.scrollTop = typingText.scrollHeight;
         } else {
             clearInterval(typingInterval);
         }
-    }, 50); // Typing speed
+    }, 50);
 }
 
 function skipTypingMessage() {
