@@ -1,0 +1,174 @@
+/* responsive.css */
+
+/* Responsive overrides untuk max-width 768px (mobile) */
+@media (max-width: 768px) {
+    /* === Loading Screen === */
+    .loading-text {
+        font-size: 14px;
+        text-align: center;
+        padding: 0 10px;
+    }
+
+    .loading-progress {
+        width: 80%;
+        max-width: 200px;
+        height: 8px;
+    }
+
+    .loading-progress-bar {
+        height: 100%;
+    }
+
+    /* === GameBoy screen 0 === */
+    .gameboy {
+        width: 350px;
+        height: 580px;
+        margin: 0 auto;
+    }
+
+    .gameboy-screen-container {
+        width: 280px;
+        height: 250px;
+    }
+
+    .gameboy-screen {
+        padding: 10px;
+    }
+
+    .gameboy-title {
+        font-size: 14px;
+    }
+
+    .gameboy-menu-item {
+        font-size: 10px;
+        padding: 6px;
+    }
+
+    .gameboy-controls {
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 0 20px;
+    }
+
+    .gameboy-start-select {
+        flex-direction: row;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 20px;
+    }
+
+    /* === GameBoy screen 2 (Ceramah) === */
+    .message-container .gameboy {
+        width: 350px;
+        height: 580px;
+    }
+
+    .message-container .gameboy-screen-container {
+        width: 280px;
+        height: 250px;
+    }
+
+    .typing-text {
+        font-size: 10px;
+        padding: 10px;
+        max-height: 220px;
+    }
+
+    .progress-container {
+        width: 80%;
+        margin: 10px auto;
+        height: 6px;
+    }
+
+    .message-container .gameboy-controls {
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    /* === Game Dino fallback === */
+    .dino-game-container,
+    .dino-fallback {
+        width: 95vw;
+        height: 200px;
+    }
+
+    .dino {
+        width: 40px;
+        height: 40px;
+        left: 20px;
+    }
+
+    .cactus {
+        width: 20px;
+        height: 40px;
+    }
+
+    .score {
+        font-size: 10px;
+        top: 5px;
+        right: 10px;
+    }
+
+    .game-over-text {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .motivational-message {
+        font-size: 10px;
+        max-width: 90%;
+        padding: 0 10px;
+    }
+
+    /* === General Button Adjustments === */
+    .btn {
+        font-size: 10px;
+        padding: 8px 14px;
+    }
+
+    .nav-buttons {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+
+    /* === Titles and Subtitle === */
+    .neon-title,
+    .subtitle {
+        font-size: 16px;
+        text-align: center;
+    }
+
+    /* === Audio Button === */
+    .audio-btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    /* === Gallery Slide & Controls === */
+    .gallery-slide {
+        max-width: 95vw;
+        height: auto;
+    }
+
+    .gallery-img {
+        height: 200px;
+    }
+
+    .gallery-title {
+        font-size: 12px;
+    }
+
+    .gallery-nav-wrapper {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .gallery-home {
+        position: static;
+        transform: none;
+        margin: 0 auto;
+    }
+}
