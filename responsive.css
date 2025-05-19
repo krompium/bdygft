@@ -172,3 +172,7 @@
         margin: 0 auto;
     }
 }
+.gallery-nav-wrapper button {
+    z-index: 1000;
+    touch-action: manipulation;
+}
