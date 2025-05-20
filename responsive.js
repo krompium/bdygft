@@ -59,13 +59,4 @@
       }, 20);
     }
   }
-
-  // Reinforce gallery navigation clicks for mobile
-  ['nextBtn', 'prevBtn'].forEach(id => {
-    document.getElementById(id)?.addEventListener('click', function(e) {
-      e.preventDefault();
-      if (id === 'nextBtn') nextSlide();
-      else prevSlide();
-    });
-  });
 })();
