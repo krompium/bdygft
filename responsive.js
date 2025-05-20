@@ -60,9 +60,6 @@
     }
   }
 
-  // Ensure background music loops on mobile
-  bgMusic.addEventListener('ended', () => { bgMusic.play(); });
-
   // Reinforce gallery navigation clicks for mobile
   ['nextBtn', 'prevBtn'].forEach(id => {
     document.getElementById(id)?.addEventListener('click', function(e) {
