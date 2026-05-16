@@ -1,356 +1,434 @@
-// Game variables
-let isJumping = false;
-let isGameOver = false;
-let score = 0;
-let gameSpeed = 1;
-let speedIncreaseTimer;
-let dinoBottom = 0; // Lebih aman dari getComputedStyle
+// ============================================================
+// STATE MANAGEMENT
+// ============================================================
+const State = {
+  currentScreen: 'gameboy', // 'gameboy' | 'game' | 'message' | 'gallery'
+  isJumping: false,
+  isGameOver: false,
+  score: 0,
+  gameSpeed: 1,
+  dinoBottom: 0,
+  charIndex: 0,
+  typingInterval: null,
+  speedIncreaseTimer: null,
+  cactusInterval: null,
+  currentSlide: 0,
+  konamiIndex: 0,
+};
 
-// DOM elements
-const loadingScreen = document.getElementById('loadingScreen');
-const loadingBar = document.getElementById('loadingBar');
-const fallbackGame = document.getElementById('fallbackGame');
-const dinoIframe = document.getElementById('dinoIframe');
-const dino = document.getElementById('dino');
-const cactus = document.getElementById('cactus');
-const scoreDisplay = document.getElementById('score');
-const gameOverText = document.getElementById('gameOver');
-const motivationalMessage = document.getElementById('motivationalMessage');
-const gameScreen = document.getElementById('gameScreen');
-const messageScreen = document.getElementById('messageScreen');
-const galleryScreen = document.getElementById('galleryScreen');
-const typingText = document.getElementById('typingText');
-const nextFromMessageBtn = document.getElementById('nextFromMessageBtn');
-const nextFromGameBtn = document.getElementById('nextFromGameBtn');
-const skipMsgBtn = document.getElementById('skipMsgBtn');
-const resetGameBtn = document.getElementById('resetGameBtn');
-const homeFromGalleryBtn = document.getElementById('homeFromGalleryBtn');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const messageProgress = document.getElementById('messageProgress');
-const audioToggle = document.getElementById('audioToggle');
-const bgMusic = document.getElementById('bgMusic');
-const gameboyScreen = document.getElementById('gameboyScreen');
-const playDinoBtn = document.getElementById('playDinoBtn');
-const playMessageBtn = document.getElementById('playMessageBtn');
-const playGalleryBtn = document.getElementById('playGalleryBtn');
-const hearts = document.getElementById('hearts');
-const startButton = document.getElementById('startButton');
+// ============================================================
+// DOM ELEMENTS
+// ============================================================
+const $ = (id) => document.getElementById(id);
 
-// Motivational messages array
+const loadingScreen   = $('loadingScreen');
+const loadingBar      = $('loadingBar');
+const fallbackGame    = $('fallbackGame');
+const dino            = $('dino');
+const cactus          = $('cactus');
+const scoreDisplay    = $('score');
+const gameOverText    = $('gameOver');
+const motivMsg        = $('motivationalMessage');
+const gameScreen      = $('gameScreen');
+const messageScreen   = $('messageScreen');
+const galleryScreen   = $('galleryScreen');
+const gameboyScreen   = $('gameboyScreen');
+const typingText      = $('typingText');
+const messageProgress = $('messageProgress');
+const audioToggle     = $('audioToggle');
+const bgMusic         = $('bgMusic');
+const hearts          = $('hearts');
+
+const slides = document.querySelectorAll('.gallery-slide');
+
+// ============================================================
+// CONSTANTS
+// ============================================================
+const SCREEN_ORDER = ['gameboy', 'game', 'message', 'gallery'];
+
+const SCREEN_EL = {
+  gameboy: gameboyScreen,
+  game:    gameScreen,
+  message: messageScreen,
+  gallery: galleryScreen,
+};
+
 const motivationalMessages = [
-    "MWAAHHH 😙",
-    "YIPPIIEEE",
-    "AYO KAK COBA LAGII! ❤️",
-    "HMM HMM",
-    "GA KALAH ITU ITUNGANNYA",
-    "DI HATI AKU MENANG KOK",
+  "MWAAHHH 😙",
+  "YIPPIIEEE",
+  "AYO KAK COBA LAGII! ❤️",
+  "HMM HMM",
+  "GA KALAH ITU ITUNGANNYA",
+  "DI HATI AKU MENANG KOK",
 ];
 
+const birthdayMessage =
+  "Ngga deh, Aku mau bilang aja selamat ulang tahun yaa jinan semoga dengan bertambahnyaa umur ini " +
+  "kamu bisa tumbuh lebih tinggi lagii yeaayyy, ehh maksudnya tumbuh dewasa dan lebih baik lagi yaa " +
+  "dari sebelumnya, semoga kamu selalu ceria dan excited seperti biasanya soalnyaa kamuu kalo senyum " +
+  "lucuuuu akuu sukaaa mwaah mwaah 😙, apalagi yaa? hmm hmm, semoga kamuu diberi umur yang panjang " +
+  "sepanjang panjangnyaaa yaaa, gapapaa kok kamuu pendek yang penting umur kamuu panjang 😙, terus " +
+  "semogaa kamuu sehat selaluu, soalnyaa kalo kamu sakit nantii akuu gaada teman berceritaa 😔 " +
+  "apalagiii yaa akuu bingung, hmm gituu gituu deh pokoknyaaa love youu mwaah mwaah😘";
+
+// ============================================================
+// SCREEN NAVIGATION
+// ============================================================
+function goToScreen(name) {
+  const idx = SCREEN_ORDER.indexOf(name);
+  if (idx === -1) return;
+
+  SCREEN_ORDER.forEach((key, i) => {
+    const offset = (i - idx) * 100;
+    SCREEN_EL[key].style.transform = `translateX(${offset}vw)`;
+  });
+
+  State.currentScreen = name;
+
+  // Screen-specific init
+  if (name === 'game')    initGame();
+  if (name === 'message') initMessage();
+  if (name === 'gallery') initGallery();
+}
+
+// ============================================================
+// LOADING
+// ============================================================
 function startLoading() {
-    loadingScreen.style.display = 'flex';
-    loadingBar.style.width = '0%';
-    setTimeout(() => { loadingBar.style.width = '100%'; }, 100);
-    setTimeout(() => {
-        loadingScreen.style.opacity = '0';
-        setTimeout(() => { loadingScreen.style.display = 'none'; }, 500);
-    }, 3000);
+  loadingScreen.style.display = 'flex';
+  loadingBar.style.width = '0%';
+  setTimeout(() => { loadingBar.style.width = '100%'; }, 100);
+  setTimeout(() => {
+    loadingScreen.style.opacity = '0';
+    setTimeout(() => { loadingScreen.style.display = 'none'; }, 500);
+  }, 3000);
 }
 
-function createHearts() {
-    for (let i = 0; i < 20; i++) {
-        const heart = document.createElement('div');
-        heart.classList.add('heart');
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
-        heart.style.animationDelay = (Math.random() * 10) + 's';
-        heart.style.opacity = Math.random() * 0.5 + 0.1;
-        hearts.appendChild(heart);
-    }
+// ============================================================
+// FLOATING HEARTS
+// ============================================================
+function createHearts(count = 20) {
+  for (let i = 0; i < count; i++) {
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    heart.style.left              = Math.random() * 100 + 'vw';
+    heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+    heart.style.animationDelay    = (Math.random() * 10) + 's';
+    heart.style.opacity           = String(Math.random() * 0.5 + 0.1);
+    hearts.appendChild(heart);
+  }
 }
 
-const message = "Ngga deh, Aku mau bilang aja selamat ulang tahun yaa jinan semoga dengan bertambahnyaa umur ini kamu bisa tumbuh lebih tinggi lagii yeaayyy, ehh maksudnya tumbuh dewasa dan lebih baik lagi yaa dari sebelumnya, semoga kamu selalu ceria dan excited seperti biasanya soalnyaa kamuu kalo senyum lucuuuu akuu sukaaa mwaah mwaah 😙, apalagi yaa? hmm hmm, semoga kamuu diberi umur yang panjang sepanjang panjangnyaaa yaaa, gapapaa kok kamuu pendek yang penting umur kamuu panjang 😙, terus semogaa kamuu sehat selaluu, soalnyaa kalo kamu sakit nantii akuu gaada teman berceritaa 😔 apalagiii yaa akuu bingung, hmm gituu gituu deh pokoknyaaa love youu mwaah mwaah😘";
-let charIndex = 0;
-let typingInterval = null;
-let slideInterval;
-let isSlideShowActive = false;
-
-// Fallback Game Logic (FIXED FOR MOBILE/RESPONSIVE)
-function useFallbackGame() {
-    dinoIframe.style.display = "none";
-    fallbackGame.style.display = "block";
-    startFallbackGame();
+// ============================================================
+// DINO GAME
+// ============================================================
+function initGame() {
+  resetGame();
 }
 
-function startFallbackGame() {
-    isGameOver = false;
-    score = 0;
-    gameSpeed = 1;
-    scoreDisplay.textContent = `Score: 0`;
-    gameOverText.style.display = 'none';
-    motivationalMessage.textContent = '';
-    cactus.style.right = '-50px';
-    dino.style.bottom = '0px';
-    
-    moveCactus();
-    
-    clearInterval(speedIncreaseTimer);
-    speedIncreaseTimer = setInterval(() => {
-        if (!isGameOver && gameSpeed < 3) gameSpeed += 0.1;
-    }, 5000);
+function resetGame() {
+  // Clear previous intervals
+  clearInterval(State.cactusInterval);
+  clearInterval(State.speedIncreaseTimer);
+
+  State.isGameOver = false;
+  State.isJumping  = false;
+  State.score      = 0;
+  State.gameSpeed  = 1;
+  State.dinoBottom = 0;
+
+  scoreDisplay.textContent      = 'Score: 0';
+  gameOverText.style.display    = 'none';
+  motivMsg.textContent          = '';
+  cactus.style.right            = '-50px';
+  dino.style.bottom             = '0px';
+
+  moveCactus();
+
+  State.speedIncreaseTimer = setInterval(() => {
+    if (!State.isGameOver && State.gameSpeed < 3) State.gameSpeed += 0.1;
+  }, 5000);
 }
 
 function jump() {
-    if (isJumping) return;
-    isJumping = true;
-    let jumpCount = 0;
-    dinoBottom = 0;
-    
-    const jumpInterval = setInterval(() => {
-        if (jumpCount < 15) {
-            dinoBottom += 6;
-        } else if (jumpCount >= 15 && jumpCount < 30) {
-            dinoBottom -= 6;
-        } else {
-            clearInterval(jumpInterval);
-            isJumping = false;
-            dinoBottom = 0;
-        }
-        dino.style.bottom = dinoBottom + 'px';
-        jumpCount++;
-    }, 20);
+  if (State.isJumping || State.isGameOver) return;
+  State.isJumping = true;
+  let jumpCount = 0;
+  State.dinoBottom = 0;
+
+  const jumpInterval = setInterval(() => {
+    if (jumpCount < 15) {
+      State.dinoBottom += 6;
+    } else if (jumpCount < 30) {
+      State.dinoBottom -= 6;
+    } else {
+      clearInterval(jumpInterval);
+      State.isJumping  = false;
+      State.dinoBottom = 0;
+    }
+    dino.style.bottom = State.dinoBottom + 'px';
+    jumpCount++;
+  }, 20);
 }
 
 function moveCactus() {
-    let position = -50;
-    const moveInterval = setInterval(() => {
-        if (isGameOver) {
-            clearInterval(moveInterval);
-            return;
-        }
-        
-        const containerWidth = fallbackGame.clientWidth;
-        
-        if (position > containerWidth + 50) {
-            position = -50;
-            score += 10;
-            scoreDisplay.textContent = `Score: ${score}`;
-        }
-        
-        position += 5 * gameSpeed;
-        cactus.style.right = position + 'px';
-        
-        // COLLISION FIX: Gunakan getBoundingClientRect agar akurat di layar HP maupun Desktop
-        const dinoRect = dino.getBoundingClientRect();
-        const cactusRect = cactus.getBoundingClientRect();
-        const hitPadding = 15; // Beri ruang toleransi agar game tidak terlalu sulit
+  let position = -50;
+  State.cactusInterval = setInterval(() => {
+    if (State.isGameOver) {
+      clearInterval(State.cactusInterval);
+      return;
+    }
 
-        if (
-            dinoRect.right - hitPadding > cactusRect.left + hitPadding &&
-            dinoRect.left + hitPadding < cactusRect.right - hitPadding &&
-            dinoRect.bottom > cactusRect.top + hitPadding
-        ) {
-            clearInterval(moveInterval);
-            clearInterval(speedIncreaseTimer);
-            gameOver();
-        }
-    }, 20);
+    const containerWidth = fallbackGame.clientWidth;
+    if (position > containerWidth + 50) {
+      position = -50;
+      State.score += 10;
+      scoreDisplay.textContent = `Score: ${State.score}`;
+    }
+
+    position += 5 * State.gameSpeed;
+    cactus.style.right = position + 'px';
+
+    // Collision detection
+    const dinoRect   = dino.getBoundingClientRect();
+    const cactusRect = cactus.getBoundingClientRect();
+    const pad        = 12;
+
+    if (
+      dinoRect.right  - pad > cactusRect.left  + pad &&
+      dinoRect.left   + pad < cactusRect.right - pad &&
+      dinoRect.bottom      > cactusRect.top    + pad
+    ) {
+      clearInterval(State.cactusInterval);
+      clearInterval(State.speedIncreaseTimer);
+      triggerGameOver();
+    }
+  }, 20);
 }
 
-function gameOver() {
-    isGameOver = true;
-    gameOverText.style.display = 'block';
-    const randomIndex = Math.floor(Math.random() * motivationalMessages.length);
-    motivationalMessage.textContent = motivationalMessages[randomIndex];
+function triggerGameOver() {
+  State.isGameOver = true;
+  gameOverText.style.display = 'block';
+  const idx = Math.floor(Math.random() * motivationalMessages.length);
+  motivMsg.textContent = motivationalMessages[idx];
 }
 
-function showGameboyScreen() {
-    gameboyScreen.style.transform = 'translateX(0)';
-    gameScreen.style.transform = 'translateX(100vw)';
-    messageScreen.style.transform = 'translateX(200vw)';
-    galleryScreen.style.transform = 'translateX(300vw)';
+// ============================================================
+// MESSAGE / TYPING
+// ============================================================
+function initMessage() {
+  State.charIndex = 0;
+  typingText.innerHTML = '';
+  messageProgress.style.width = '0%';
+  startTyping();
 }
 
-bgMusic.loop = true;
-
-function goToGameScreen() {
-    gameboyScreen.style.transform = 'translateX(-100vw)';
-    gameScreen.style.transform = 'translateX(0)';
-    messageScreen.style.transform = 'translateX(100vw)';
-    galleryScreen.style.transform = 'translateX(200vw)';
-    startFallbackGame();
+function startTyping() {
+  if (State.typingInterval) clearInterval(State.typingInterval);
+  State.typingInterval = setInterval(() => {
+    if (State.charIndex < birthdayMessage.length) {
+      typingText.innerHTML += birthdayMessage.charAt(State.charIndex);
+      State.charIndex++;
+      messageProgress.style.width = `${(State.charIndex / birthdayMessage.length) * 100}%`;
+      typingText.scrollTop = typingText.scrollHeight;
+    } else {
+      clearInterval(State.typingInterval);
+    }
+  }, 50);
 }
 
-function goToMessageScreen() {
-    gameboyScreen.style.transform = 'translateX(-200vw)';
-    gameScreen.style.transform = 'translateX(-100vw)';
-    messageScreen.style.transform = 'translateX(0)';
-    galleryScreen.style.transform = 'translateX(100vw)';
-    charIndex = 0;
-    typingText.innerHTML = "";
-    messageProgress.style.width = "0%";
-    startTypingMessage();
+function skipTyping() {
+  if (State.typingInterval) clearInterval(State.typingInterval);
+  typingText.innerHTML    = birthdayMessage;
+  State.charIndex         = birthdayMessage.length;
+  messageProgress.style.width = '100%';
 }
 
-function startTypingMessage() {
-    if (typingInterval) clearInterval(typingInterval);
-    typingInterval = setInterval(() => {
-        if (charIndex < message.length) {
-            typingText.innerHTML += message.charAt(charIndex);
-            charIndex++;
-            messageProgress.style.width = `${(charIndex / message.length) * 100}%`;
-            typingText.scrollTop = typingText.scrollHeight;
-        } else {
-            clearInterval(typingInterval);
-        }
-    }, 50);
-}
-
-function skipTypingMessage() {
-    if (typingInterval) clearInterval(typingInterval);
-    typingText.innerHTML = message;
-    charIndex = message.length;
-    messageProgress.style.width = "100%";
-}
-
-function goToGalleryScreen() {
-    gameboyScreen.style.transform = 'translateX(-300vw)';
-    gameScreen.style.transform = 'translateX(-200vw)';
-    messageScreen.style.transform = 'translateX(-100vw)';
-    galleryScreen.style.transform = 'translateX(0)';
-    initGallery();
-    stopSlideshow();
-}
-
-function restartExperience() {
-    gameboyScreen.style.transform = 'translateX(0)';
-    gameScreen.style.transform = 'translateX(100vw)';
-    messageScreen.style.transform = 'translateX(200vw)';
-    galleryScreen.style.transform = 'translateX(300vw)';
-    stopSlideshow();
-}
-
-// Gallery Functions
-let currentSlide = 0;
-const slides = document.querySelectorAll('.gallery-slide');
-
+// ============================================================
+// GALLERY
+// ============================================================
 function initGallery() {
-    showSlide(currentSlide);
+  State.currentSlide = 0;
+  showSlide(0);
 }
 
 function showSlide(index) {
-    document.querySelectorAll('.gallery-slide video').forEach(video => {
-        video.pause();
-    });
-    slides.forEach(slide => {
-        slide.classList.remove('active', 'sliding-in', 'sliding-out');
-    });
-    const current = slides[index];
-    current.classList.add('active', 'sliding-in');
-    const video = current.querySelector('video');
-    if (video) {
-        video.play().catch(e => console.log("Video Autoplay Error:", e));
-    }
-}
+  // Pause all videos
+  document.querySelectorAll('.gallery-slide video').forEach(v => v.pause());
 
-function stopSlideshow() {
-    isSlideShowActive = false;
-    if (slideInterval) clearInterval(slideInterval);
+  slides.forEach(s => s.classList.remove('active', 'slide-enter'));
+  const current = slides[index];
+  current.classList.add('active', 'slide-enter');
+
+  // Update dot indicators
+  document.querySelectorAll('.gallery-dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === index);
+  });
+
+  const video = current.querySelector('video');
+  if (video) video.play().catch(() => {});
 }
 
 function nextSlide() {
-    slides[currentSlide].classList.add('sliding-out');
-    currentSlide = (currentSlide + 1) % slides.length;
-    setTimeout(() => { showSlide(currentSlide); }, 300);
+  State.currentSlide = (State.currentSlide + 1) % slides.length;
+  showSlide(State.currentSlide);
 }
 
 function prevSlide() {
-    slides[currentSlide].classList.add('sliding-out');
-    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-    setTimeout(() => { showSlide(currentSlide); }, 300);
+  State.currentSlide = (State.currentSlide - 1 + slides.length) % slides.length;
+  showSlide(State.currentSlide);
 }
 
-// Audio Control
-function toggleAudio() {
-    if (bgMusic.paused) {
-        bgMusic.play();
-        audioToggle.innerHTML = '<i class="bi bi-volume-up-fill"></i>';
-        audioToggle.style.color = "#00ffff";
-    } else {
-        bgMusic.pause();
-        audioToggle.innerHTML = '<i class="bi bi-volume-mute-fill"></i>';
-        audioToggle.style.color = "#ff00ff";
-    }
-}
-
-// Setup & Initialize
-window.onload = function() {
-    startLoading();
-    createHearts();
-    setTimeout(() => { showGameboyScreen(); }, 3000);
-    useFallbackGame();
-    showSlide(0);
-    
-    // Auto unlock music on first click to bypass browser restrictions
-    const unlockAudio = () => {
-        bgMusic.play().then(() => {
-            audioToggle.innerHTML = '<i class="bi bi-volume-up-fill"></i>';
-            audioToggle.style.color = "#00ffff";
-        }).catch(() => {}); // Abaikan jika error
-        document.removeEventListener('click', unlockAudio);
-    };
-    document.addEventListener('click', unlockAudio);
-
-    // Event Listeners
-    document.addEventListener('keydown', (event) => {
-        if (event.code === 'Space') {
-            event.preventDefault();
-            if (!isGameOver && gameScreen.style.transform === 'translateX(0px)') {
-                jump();
-            } else if (isGameOver && gameScreen.style.transform === 'translateX(0px)') {
-                goToMessageScreen();
-            }
-        } else if (event.code === 'ArrowRight') {
-            if (gameScreen.style.transform === 'translateX(0px)') goToMessageScreen();
-            else if (messageScreen.style.transform === 'translateX(0px)') goToGalleryScreen();
-            else if (galleryScreen.style.transform === 'translateX(0px)') nextSlide();
-        } else if (event.code === 'ArrowLeft' && galleryScreen.style.transform === 'translateX(0px)') {
-            prevSlide();
-        }
+// Build dot indicators
+function buildGalleryDots() {
+  const dotsContainer = $('galleryDots');
+  if (!dotsContainer) return;
+  slides.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'gallery-dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => {
+      State.currentSlide = i;
+      showSlide(i);
     });
-    
-    dino.addEventListener('click', () => { if (!isGameOver) jump(); });
-    gameOverText.addEventListener('click', () => { if (isGameOver) goToMessageScreen(); });
-    startButton.addEventListener('click', goToGameScreen);
-    nextFromGameBtn.addEventListener('click', goToMessageScreen);
-    skipMsgBtn.addEventListener('click', skipTypingMessage);
-    resetGameBtn.addEventListener('click', startFallbackGame);
-    nextFromMessageBtn.addEventListener('click', goToGalleryScreen);
-    homeFromGalleryBtn.addEventListener('click', restartExperience);
-    playDinoBtn.addEventListener('click', goToGameScreen);
-    playMessageBtn.addEventListener('click', goToMessageScreen);
-    playGalleryBtn.addEventListener('click', goToGalleryScreen);
-    if(prevBtn) prevBtn.addEventListener('click', prevSlide);
-    if(nextBtn) nextBtn.addEventListener('click', nextSlide);
-    audioToggle.addEventListener('click', toggleAudio);
-};
+    dotsContainer.appendChild(dot);
+  });
+}
 
-// Konami Code Easter Egg
-let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-let konamiIndex = 0;
-document.addEventListener('keydown', (e) => {
-    if (e.key === konamiCode[konamiIndex] || e.code === konamiCode[konamiIndex]) {
-        konamiIndex++;
-        if (konamiIndex === konamiCode.length) {
-            document.body.style.animation = 'gradientAnimation 5s ease infinite';
-            alert('KONAMI CODE ACTIVATED: Valentine Power Up! ❤️');
-            konamiIndex = 0;
-            document.querySelectorAll('.neon-title').forEach(title => {
-                title.style.color = '#ff00ff';
-            });
-            createHearts(); // Tambah lebih banyak heart
-        }
-    } else {
-        konamiIndex = 0;
+// ============================================================
+// AUDIO
+// ============================================================
+bgMusic.loop = true;
+
+function toggleAudio() {
+  if (bgMusic.paused) {
+    bgMusic.play().catch(() => {});
+    audioToggle.innerHTML = '<i class="bi bi-volume-up-fill"></i>';
+    audioToggle.style.color = '#ff6b6b';
+  } else {
+    bgMusic.pause();
+    audioToggle.innerHTML = '<i class="bi bi-volume-mute-fill"></i>';
+    audioToggle.style.color = '#888';
+  }
+}
+
+// ============================================================
+// SWIPE GESTURE SUPPORT
+// ============================================================
+function addSwipeSupport(el, onLeft, onRight) {
+  let startX = null;
+  el.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+  }, { passive: true });
+  el.addEventListener('touchend', e => {
+    if (startX === null) return;
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) onLeft && onLeft();
+      else          onRight && onRight();
     }
+    startX = null;
+  }, { passive: true });
+}
+
+// ============================================================
+// KEYBOARD
+// ============================================================
+document.addEventListener('keydown', (e) => {
+  // Konami Code
+  const konamiCode = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+  if (e.key === konamiCode[State.konamiIndex]) {
+    State.konamiIndex++;
+    if (State.konamiIndex === konamiCode.length) {
+      activateKonami();
+      State.konamiIndex = 0;
+    }
+  } else {
+    State.konamiIndex = 0;
+  }
+
+  if (e.code === 'Space') {
+    e.preventDefault();
+    if (State.currentScreen === 'game') {
+      if (!State.isGameOver) jump();
+      else goToScreen('message');
+    }
+  }
+
+  if (e.code === 'ArrowRight') {
+    if (State.currentScreen === 'game')    goToScreen('message');
+    if (State.currentScreen === 'message') goToScreen('gallery');
+    if (State.currentScreen === 'gallery') nextSlide();
+  }
+  if (e.code === 'ArrowLeft') {
+    if (State.currentScreen === 'gallery') prevSlide();
+  }
 });
+
+function activateKonami() {
+  createHearts(30);
+  document.querySelectorAll('.neon-title').forEach(t => {
+    t.style.color = '#ff00ff';
+    t.style.textShadow = '0 0 20px #ff00ff, 0 0 40px #ff00ff';
+  });
+  alert('KONAMI CODE ACTIVATED: Valentine Power Up! ❤️');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.onload = function () {
+  startLoading();
+  createHearts();
+  buildGalleryDots();
+
+  // Set initial positions
+  goToScreen('gameboy');
+
+  // Show gameboy after loading
+  setTimeout(() => goToScreen('gameboy'), 3000);
+
+  // Auto-unlock audio on first interaction
+  const unlockAudio = () => {
+    bgMusic.play().then(() => {
+      audioToggle.innerHTML   = '<i class="bi bi-volume-up-fill"></i>';
+      audioToggle.style.color = '#ff6b6b';
+    }).catch(() => {});
+    document.removeEventListener('click', unlockAudio);
+    document.removeEventListener('touchstart', unlockAudio);
+  };
+  document.addEventListener('click',      unlockAudio);
+  document.addEventListener('touchstart', unlockAudio, { passive: true });
+
+  // ── Button Events ──
+  $('startButton').addEventListener('click',       () => goToScreen('game'));
+  $('playDinoBtn').addEventListener('click',       () => goToScreen('game'));
+  $('playMessageBtn').addEventListener('click',    () => goToScreen('message'));
+  $('playGalleryBtn').addEventListener('click',    () => goToScreen('gallery'));
+  $('nextFromGameBtn').addEventListener('click',   () => goToScreen('message'));
+  $('nextFromMessageBtn').addEventListener('click',() => goToScreen('gallery'));
+  $('homeFromGalleryBtn').addEventListener('click',() => goToScreen('gameboy'));
+  $('skipMsgBtn').addEventListener('click',        skipTyping);
+  $('resetGameBtn').addEventListener('click',      resetGame);
+  $('prevBtn').addEventListener('click',           prevSlide);
+  $('nextBtn').addEventListener('click',           nextSlide);
+  $('audioToggle').addEventListener('click',       toggleAudio);
+
+  // ── Dino jump inputs ──
+  dino.addEventListener('click',        () => jump());
+  dino.addEventListener('touchstart',   () => jump(), { passive: true });
+  gameOverText.addEventListener('click', () => { if (State.isGameOver) goToScreen('message'); });
+
+  // ── Swipe gestures ──
+  addSwipeSupport(gameScreen,
+    () => goToScreen('message'),  // swipe left → next
+    null
+  );
+  addSwipeSupport(messageScreen,
+    () => goToScreen('gallery'),
+    () => goToScreen('game')
+  );
+  addSwipeSupport(galleryScreen,
+    nextSlide,
+    prevSlide
+  );
+};
