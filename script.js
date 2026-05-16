@@ -2,14 +2,15 @@
 let isJumping = false;
 let isGameOver = false;
 let score = 0;
-let gameSpeed = 1; // Initial game speed
+let gameSpeed = 1;
 let speedIncreaseTimer;
+let dinoBottom = 0; // Lebih aman dari getComputedStyle
 
 // DOM elements
 const loadingScreen = document.getElementById('loadingScreen');
 const loadingBar = document.getElementById('loadingBar');
-const dinoIframe = document.getElementById('dinoIframe');
 const fallbackGame = document.getElementById('fallbackGame');
+const dinoIframe = document.getElementById('dinoIframe');
 const dino = document.getElementById('dino');
 const cactus = document.getElementById('cactus');
 const scoreDisplay = document.getElementById('score');
@@ -46,24 +47,16 @@ const motivationalMessages = [
     "DI HATI AKU MENANG KOK",
 ];
 
-// Create loading animation
 function startLoading() {
     loadingScreen.style.display = 'flex';
     loadingBar.style.width = '0%';
-    
-    setTimeout(() => {
-        loadingBar.style.width = '100%';
-    }, 100);
-    
+    setTimeout(() => { loadingBar.style.width = '100%'; }, 100);
     setTimeout(() => {
         loadingScreen.style.opacity = '0';
-        setTimeout(() => {
-            loadingScreen.style.display = 'none';
-        }, 500);
+        setTimeout(() => { loadingScreen.style.display = 'none'; }, 500);
     }, 3000);
 }
 
-// Create floating hearts
 function createHearts() {
     for (let i = 0; i < 20; i++) {
         const heart = document.createElement('div');
@@ -76,100 +69,87 @@ function createHearts() {
     }
 }
 
-// The message to type
-const message = "Ngga deh, Aku mau bilang aja selamat ulang tahun yaa jinan semoga dengan bertambahnyaa umur ini kamu  bisa tumbuh lebih tinggi lagii yeaayyy, ehh maksudnya tumbuh dewasa dan lebih baik lagi yaa dari sebelumnya, semoga kamu selalu ceria dan excited seperti biasanya soalnyaa kamuu kalo senyum lucuuuu akuu sukaaa mwaah mwaah 😙, apalagi yaa? hmm hmm, semoga kamuu diberi umur yang panjang sepanjang panjangnyaaa yaaa, gapapaa kok kamuu pendek yang penting umur kamuu panjang 😙, terus semogaa kamuu sehat selaluu, soalnyaa kalo kamu sakit nantii akuu gaada teman berceritaa 😔 apalagiii yaa akuu bingung, hmm gituu gituu deh pokoknyaaa love youu mwaah mwaah😘";
+const message = "Ngga deh, Aku mau bilang aja selamat ulang tahun yaa jinan semoga dengan bertambahnyaa umur ini kamu bisa tumbuh lebih tinggi lagii yeaayyy, ehh maksudnya tumbuh dewasa dan lebih baik lagi yaa dari sebelumnya, semoga kamu selalu ceria dan excited seperti biasanya soalnyaa kamuu kalo senyum lucuuuu akuu sukaaa mwaah mwaah 😙, apalagi yaa? hmm hmm, semoga kamuu diberi umur yang panjang sepanjang panjangnyaaa yaaa, gapapaa kok kamuu pendek yang penting umur kamuu panjang 😙, terus semogaa kamuu sehat selaluu, soalnyaa kalo kamu sakit nantii akuu gaada teman berceritaa 😔 apalagiii yaa akuu bingung, hmm gituu gituu deh pokoknyaaa love youu mwaah mwaah😘";
 let charIndex = 0;
 let typingInterval = null;
-
-// Gallery slideshow variables
 let slideInterval;
 let isSlideShowActive = false;
 
-// Attempt to load Chrome Dino game
-function loadChromeDino() {
-    useFallbackGame(); // We'll always use our custom dino game
-}
-
+// Fallback Game Logic (FIXED FOR MOBILE/RESPONSIVE)
 function useFallbackGame() {
     dinoIframe.style.display = "none";
     fallbackGame.style.display = "block";
     startFallbackGame();
 }
 
-// Fallback Game Functions
 function startFallbackGame() {
-    // Reset game state
     isGameOver = false;
     score = 0;
     gameSpeed = 1;
     scoreDisplay.textContent = `Score: 0`;
     gameOverText.style.display = 'none';
     motivationalMessage.textContent = '';
-    
-    // Reset cactus position (start from outside the right edge)
     cactus.style.right = '-50px';
+    dino.style.bottom = '0px';
     
-    // Start the game
     moveCactus();
     
-    // Set timer to increase speed gradually
     clearInterval(speedIncreaseTimer);
     speedIncreaseTimer = setInterval(() => {
-        if (!isGameOver && gameSpeed < 3) {
-            gameSpeed += 0.1;
-        }
+        if (!isGameOver && gameSpeed < 3) gameSpeed += 0.1;
     }, 5000);
 }
 
 function jump() {
     if (isJumping) return;
     isJumping = true;
-    
     let jumpCount = 0;
+    dinoBottom = 0;
+    
     const jumpInterval = setInterval(() => {
-        // Jump up
         if (jumpCount < 15) {
-            dino.style.bottom = (parseInt(window.getComputedStyle(dino).getPropertyValue('bottom')) + 5) + 'px';
-        }
-        // Fall down
-        else if (jumpCount >= 15 && jumpCount < 30) {
-            dino.style.bottom = (parseInt(window.getComputedStyle(dino).getPropertyValue('bottom')) - 5) + 'px';
-        }
-        // End jump
-        else {
+            dinoBottom += 6;
+        } else if (jumpCount >= 15 && jumpCount < 30) {
+            dinoBottom -= 6;
+        } else {
             clearInterval(jumpInterval);
             isJumping = false;
-            dino.style.bottom = '0px';
+            dinoBottom = 0;
         }
+        dino.style.bottom = dinoBottom + 'px';
         jumpCount++;
     }, 20);
 }
 
 function moveCactus() {
-    // Start cactus off-screen to the right
     let position = -50;
     const moveInterval = setInterval(() => {
-        if (position > 650) {
-            if (isGameOver) {
-                clearInterval(moveInterval);
-                return;
-            }
-            position = -50; // Reset to start off-screen
+        if (isGameOver) {
+            clearInterval(moveInterval);
+            return;
+        }
+        
+        const containerWidth = fallbackGame.clientWidth;
+        
+        if (position > containerWidth + 50) {
+            position = -50;
             score += 10;
             scoreDisplay.textContent = `Score: ${score}`;
         }
         
-        position += 5 * gameSpeed; // Speed based on gameSpeed
+        position += 5 * gameSpeed;
         cactus.style.right = position + 'px';
         
-        // Collision detection
-        const dinoBottom = parseInt(window.getComputedStyle(dino).getPropertyValue('bottom'));
-        const cactusRight = parseInt(window.getComputedStyle(cactus).getPropertyValue('right'));
-        
-        // Calculate actual position for collision detection
-        const actualCactusPos = 600 - cactusRight;
-        
-        if (actualCactusPos > 50 && actualCactusPos < 110 && dinoBottom < 40) {
+        // COLLISION FIX: Gunakan getBoundingClientRect agar akurat di layar HP maupun Desktop
+        const dinoRect = dino.getBoundingClientRect();
+        const cactusRect = cactus.getBoundingClientRect();
+        const hitPadding = 15; // Beri ruang toleransi agar game tidak terlalu sulit
+
+        if (
+            dinoRect.right - hitPadding > cactusRect.left + hitPadding &&
+            dinoRect.left + hitPadding < cactusRect.right - hitPadding &&
+            dinoRect.bottom > cactusRect.top + hitPadding
+        ) {
             clearInterval(moveInterval);
             clearInterval(speedIncreaseTimer);
             gameOver();
@@ -180,12 +160,8 @@ function moveCactus() {
 function gameOver() {
     isGameOver = true;
     gameOverText.style.display = 'block';
-    
-    // Show random motivational message
     const randomIndex = Math.floor(Math.random() * motivationalMessages.length);
     motivationalMessage.textContent = motivationalMessages[randomIndex];
-    
-    // No auto continue - player must click NEXT or press SPACE
 }
 
 function showGameboyScreen() {
@@ -193,14 +169,6 @@ function showGameboyScreen() {
     gameScreen.style.transform = 'translateX(100vw)';
     messageScreen.style.transform = 'translateX(200vw)';
     galleryScreen.style.transform = 'translateX(300vw)';
-    
-    // Play background music
-    startButton.addEventListener('click', () => {
-    goToGameScreen();
-        bgMusic.play().catch((e) => {
-            console.log("Autoplay error:", e);
-        });
-    });
 }
 
 bgMusic.loop = true;
@@ -226,16 +194,11 @@ function goToMessageScreen() {
 
 function startTypingMessage() {
     if (typingInterval) clearInterval(typingInterval);
-
     typingInterval = setInterval(() => {
         if (charIndex < message.length) {
             typingText.innerHTML += message.charAt(charIndex);
             charIndex++;
-
-            const progressPercentage = (charIndex / message.length) * 100;
-            messageProgress.style.width = `${progressPercentage}%`;
-
-            // SCROLL OTOMATIS KE BAWAH
+            messageProgress.style.width = `${(charIndex / message.length) * 100}%`;
             typingText.scrollTop = typingText.scrollHeight;
         } else {
             clearInterval(typingInterval);
@@ -244,7 +207,6 @@ function startTypingMessage() {
 }
 
 function skipTypingMessage() {
-    // Clear typing interval and show full message
     if (typingInterval) clearInterval(typingInterval);
     typingText.innerHTML = message;
     charIndex = message.length;
@@ -268,7 +230,7 @@ function restartExperience() {
     stopSlideshow();
 }
 
-// Gallery functions
+// Gallery Functions
 let currentSlide = 0;
 const slides = document.querySelectorAll('.gallery-slide');
 
@@ -277,88 +239,38 @@ function initGallery() {
 }
 
 function showSlide(index) {
-    // Pause all videos sebelum pindah slide
     document.querySelectorAll('.gallery-slide video').forEach(video => {
         video.pause();
-        video.currentTime = 0; // Reset ke awal (opsional)
     });
-
-    // Sembunyikan semua slide
     slides.forEach(slide => {
         slide.classList.remove('active', 'sliding-in', 'sliding-out');
     });
-
-    // Tampilkan slide saat ini
     const current = slides[index];
     current.classList.add('active', 'sliding-in');
-
-    // Jika ada video di dalam slide, autoplay
     const video = current.querySelector('video');
     if (video) {
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(error => {
-                console.log("Autoplay video gagal:", error);
-            });
-        }
+        video.play().catch(e => console.log("Video Autoplay Error:", e));
     }
-}
-
-
-function startSlideshow() {
-    if (isSlideShowActive) return;
-    isSlideShowActive = true;
-    
-    // Clear any existing interval
-    if (slideInterval) clearInterval(slideInterval);
-    
-    // Start slideshow
-    slideInterval = setInterval(() => {
-        nextSlide();
-    }, 5000); // Change slide every 5 seconds
 }
 
 function stopSlideshow() {
     isSlideShowActive = false;
-    if (slideInterval) {
-        clearInterval(slideInterval);
-        slideInterval = null;
-    }
+    if (slideInterval) clearInterval(slideInterval);
 }
 
 function nextSlide() {
-    // Add sliding-out animation to current slide
     slides[currentSlide].classList.add('sliding-out');
-    
-    // Update current slide index
     currentSlide = (currentSlide + 1) % slides.length;
-    
-    // Show next slide with sliding-in animation
-    setTimeout(() => {
-        showSlide(currentSlide);
-    }, 300); // Short delay for animation
+    setTimeout(() => { showSlide(currentSlide); }, 300);
 }
 
 function prevSlide() {
-    // Add sliding-out animation to current slide
     slides[currentSlide].classList.add('sliding-out');
-    
-    // Update current slide index
     currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-    
-    // Show next slide with sliding-in animation
-    setTimeout(() => {
-        showSlide(currentSlide);
-    }, 300); // Short delay for animation
-    
-    // Reset slideshow timer when manually changing slides
-    if (isSlideShowActive) {
-        stopSlideshow();
-        stopSlideshow();
-    }
+    setTimeout(() => { showSlide(currentSlide); }, 300);
 }
 
-// Audio controls
+// Audio Control
 function toggleAudio() {
     if (bgMusic.paused) {
         bgMusic.play();
@@ -371,26 +283,25 @@ function toggleAudio() {
     }
 }
 
-// Initialize
+// Setup & Initialize
 window.onload = function() {
-    // Show loading screen first
     startLoading();
-    
-    // Create floating hearts
     createHearts();
-    
-    // Show GameBoy screen after loading
-    setTimeout(() => {
-        showGameboyScreen();
-    }, 3000);
-    
-    // Try to load Chrome Dino game (will likely fall back to our version)
-    loadChromeDino();
-    
-    // Show the first slide
+    setTimeout(() => { showGameboyScreen(); }, 3000);
+    useFallbackGame();
     showSlide(0);
     
-    // Setup event listeners
+    // Auto unlock music on first click to bypass browser restrictions
+    const unlockAudio = () => {
+        bgMusic.play().then(() => {
+            audioToggle.innerHTML = '<i class="bi bi-volume-up-fill"></i>';
+            audioToggle.style.color = "#00ffff";
+        }).catch(() => {}); // Abaikan jika error
+        document.removeEventListener('click', unlockAudio);
+    };
+    document.addEventListener('click', unlockAudio);
+
+    // Event Listeners
     document.addEventListener('keydown', (event) => {
         if (event.code === 'Space') {
             event.preventDefault();
@@ -399,126 +310,45 @@ window.onload = function() {
             } else if (isGameOver && gameScreen.style.transform === 'translateX(0px)') {
                 goToMessageScreen();
             }
+        } else if (event.code === 'ArrowRight') {
+            if (gameScreen.style.transform === 'translateX(0px)') goToMessageScreen();
+            else if (messageScreen.style.transform === 'translateX(0px)') goToGalleryScreen();
+            else if (galleryScreen.style.transform === 'translateX(0px)') nextSlide();
+        } else if (event.code === 'ArrowLeft' && galleryScreen.style.transform === 'translateX(0px)') {
+            prevSlide();
         }
     });
     
-    // Game controls
-    dino.addEventListener('click', () => {
-        if (!isGameOver) {
-            jump();
-        }
-    });
-    
-    gameOverText.addEventListener('click', () => {
-        if (isGameOver) {
-            goToMessageScreen();
-        }
-    });
-    
-    // Start button functionality
+    dino.addEventListener('click', () => { if (!isGameOver) jump(); });
+    gameOverText.addEventListener('click', () => { if (isGameOver) goToMessageScreen(); });
     startButton.addEventListener('click', goToGameScreen);
-    
-    // Navigation buttons
     nextFromGameBtn.addEventListener('click', goToMessageScreen);
     skipMsgBtn.addEventListener('click', skipTypingMessage);
     resetGameBtn.addEventListener('click', startFallbackGame);
     nextFromMessageBtn.addEventListener('click', goToGalleryScreen);
     homeFromGalleryBtn.addEventListener('click', restartExperience);
-    
-    // Gameboy menu buttons
     playDinoBtn.addEventListener('click', goToGameScreen);
     playMessageBtn.addEventListener('click', goToMessageScreen);
     playGalleryBtn.addEventListener('click', goToGalleryScreen);
-    
-    // Gallery navigation
-    prevBtn?.addEventListener('click', prevSlide);
-    nextBtn?.addEventListener('click', nextSlide);
-    
-    // Audio toggle
+    if(prevBtn) prevBtn.addEventListener('click', prevSlide);
+    if(nextBtn) nextBtn.addEventListener('click', nextSlide);
     audioToggle.addEventListener('click', toggleAudio);
 };
 
-// Add some additional visual effects
-document.addEventListener('mousemove', (e) => {
-    const mouseX = e.clientX / window.innerWidth;
-    const mouseY = e.clientY / window.innerHeight;
-    
-    // Subtle reactive background effect
-    document.querySelector('.bg-gradient').style.backgroundPosition = 
-        `${mouseX * 100}% ${mouseY * 100}%`;
-});
-
-// Add keyboard shortcuts for navigation
-document.addEventListener('keydown', (e) => {
-    // Right arrow key - for manual navigation to next screen
-    if (e.code === 'ArrowRight') {
-        if (gameScreen.style.transform === 'translateX(0px)') {
-            goToMessageScreen();
-        } else if (messageScreen.style.transform === 'translateX(0px)') {
-            goToGalleryScreen();
-        } else if (galleryScreen.style.transform === 'translateX(0px)' && isSlideShowActive) {
-            nextSlide();
-        }
-    }
-    // Left arrow key - only for gallery navigation
-    else if (e.code === 'ArrowLeft') {
-        if (galleryScreen.style.transform === 'translateX(0px)' && isSlideShowActive) {
-            prevSlide();
-        }
-    }
-});
-
-// Easter egg - Konami code detector
+// Konami Code Easter Egg
 let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 let konamiIndex = 0;
-
 document.addEventListener('keydown', (e) => {
     if (e.key === konamiCode[konamiIndex] || e.code === konamiCode[konamiIndex]) {
         konamiIndex++;
         if (konamiIndex === konamiCode.length) {
-            // Easter egg activated!
             document.body.style.animation = 'gradientAnimation 5s ease infinite';
             alert('KONAMI CODE ACTIVATED: Valentine Power Up! ❤️');
             konamiIndex = 0;
-            
-            // Add some rainbow effects
             document.querySelectorAll('.neon-title').forEach(title => {
-                title.style.animation = 'rainbow 3s linear infinite';
+                title.style.color = '#ff00ff';
             });
-            
-            // Add rainbow animation if it doesn't exist
-            let hasRainbowAnimation = false;
-            for (let i = 0; i < document.styleSheets[0].cssRules.length; i++) {
-                if (document.styleSheets[0].cssRules[i].name === 'rainbow') {
-                    hasRainbowAnimation = true;
-                    break;
-                }
-            }
-            
-            if (!hasRainbowAnimation) {
-                const styleSheet = document.styleSheets[0];
-                styleSheet.insertRule(`
-                    @keyframes rainbow {
-                        0% { color: #ff0000; text-shadow: 0 0 10px #ff0000; }
-                        16% { color: #ff8000; text-shadow: 0 0 10px #ff8000; }
-                        33% { color: #ffff00; text-shadow: 0 0 10px #ffff00; }
-                        50% { color: #00ff00; text-shadow: 0 0 10px #00ff00; }
-                        66% { color: #00ffff; text-shadow: 0 0 10px #00ffff; }
-                        83% { color: #0080ff; text-shadow: 0 0 10px #0080ff; }
-                        100% { color: #ff00ff; text-shadow: 0 0 10px #ff00ff; }
-                    }
-                `, styleSheet.cssRules.length);
-            }
-            
-            // Add more hearts
-            for (let i = 0; i < 30; i++) {
-                const heart = document.createElement('div');
-                heart.classList.add('heart');
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
-                heart.style.opacity = Math.random() * 0.7 + 0.3;
-                hearts.appendChild(heart);
-            }
+            createHearts(); // Tambah lebih banyak heart
         }
     } else {
         konamiIndex = 0;
