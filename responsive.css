@@ -1,178 +1,92 @@
-/* responsive.css */
-
-/* Responsive overrides untuk max-width 768px (mobile) */
+/* ============================================================
+   RESPONSIVE — max-width: 768px (mobile)
+   ============================================================ */
 @media (max-width: 768px) {
-    /* === Loading Screen === */
-    .loading-text {
-        font-size: 14px;
-        text-align: center;
-        padding: 0 10px;
-    }
 
-    .loading-progress {
-        width: 80%;
-        max-width: 200px;
-        height: 8px;
-    }
+  /* Loading */
+  .loading-text {
+    font-size: 11px;
+    padding: 0 16px;
+    text-align: center;
+  }
+  .loading-progress { width: 75%; }
 
-    .loading-progress-bar {
-        height: 100%;
-    }
+  /* GameBoy — shrink to fit small screens */
+  .gameboy {
+    width: min(320px, 92vw);
+    transform: scale(0.92);
+    transform-origin: center center;
+  }
+  .gameboy-screen-container {
+    width: calc(100% - 40px);
+  }
+  .gameboy-title   { font-size: 11px; }
+  .gameboy-menu-item { font-size: 8px; padding: 6px; }
 
-    /* === GameBoy screen 0 === */
-    .gameboy {
-        width: 350px;
-        height: 580px;
-        margin: 0 auto;
-    }
+  /* Game screen */
+  .neon-title  { font-size: 14px; }
+  .subtitle    { font-size: 9px; }
 
-    .gameboy-screen-container {
-        width: 280px;
-        height: 250px;
-    }
+  .dino-game-container,
+  .dino-fallback {
+    width: 95vw;
+    height: clamp(150px, 45vw, 220px);
+  }
 
-    .gameboy-screen {
-        padding: 10px;
-    }
+  .dino   { width: 36px; height: 36px; left: 20px; }
+  .cactus { width: 20px; height: 36px; }
+  .score  { font-size: 8px; }
 
-    .gameboy-title {
-        font-size: 14px;
-    }
+  .game-over-text h2 { font-size: 13px; }
+  .game-over-text p  { font-size: 9px; }
+  .motivational-message { font-size: 8px; }
 
-    .gameboy-menu-item {
-        font-size: 10px;
-        padding: 6px;
-    }
+  /* Buttons */
+  .btn { font-size: 8px; padding: 8px 12px; }
 
-    .gameboy-controls {
-        flex-direction: row;
-        justify-content: space-between;
-        padding: 0 20px;
-    }
+  /* Typing / message */
+  .typing-text { font-size: 8px; line-height: 1.9; }
 
-    .gameboy-start-select {
-        flex-direction: row;
-        justify-content: center;
-        gap: 30px;
-        margin-top: 20px;
-    }
+  /* Gallery */
+  .gallery-slide {
+    width: 95vw;
+  }
+  .gallery-img {
+    height: clamp(160px, 50vw, 260px);
+  }
+  .gallery-title { font-size: 9px; }
 
-    /* === GameBoy screen 2 (Ceramah) === */
-    .message-container .gameboy {
-        width: 350px;
-        height: 580px;
-    }
+  /* Gallery nav — stack vertically on very small screens */
+  .gallery-nav-wrapper {
+    bottom: 12px;
+    padding: 0 12px;
+  }
 
-    .message-container .gameboy-screen-container {
-        width: 280px;
-        height: 250px;
-    }
+  /* Dots smaller */
+  .gallery-dot { width: 6px; height: 6px; }
 
-    .typing-text {
-        font-size: 10px;
-        padding: 10px;
-        max-height: 220px;
-    }
-
-    .progress-container {
-        width: 80%;
-        margin: 10px auto;
-        height: 6px;
-    }
-
-    .message-container .gameboy-controls {
-        flex-direction: row;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    /* === Game Dino fallback === */
-    .dino-game-container,
-    .dino-fallback {
-        width: 95vw;
-        height: 200px;
-    }
-
-    .dino {
-        width: 40px;
-        height: 40px;
-        left: 20px;
-    }
-
-    .cactus {
-        width: 20px;
-        height: 40px;
-    }
-
-    .score {
-        font-size: 10px;
-        top: 5px;
-        right: 10px;
-    }
-
-    .game-over-text {
-        font-size: 14px;
-        padding: 10px;
-    }
-
-    .motivational-message {
-        font-size: 10px;
-        max-width: 90%;
-        padding: 0 10px;
-    }
-
-    /* === General Button Adjustments === */
-    .btn {
-        font-size: 10px;
-        padding: 8px 14px;
-    }
-
-    .nav-buttons {
-        flex-direction: column;
-        gap: 10px;
-        align-items: center;
-    }
-
-    /* === Titles and Subtitle === */
-    .neon-title,
-    .subtitle {
-        font-size: 16px;
-        text-align: center;
-    }
-
-    /* === Audio Button === */
-    .audio-btn {
-        width: 32px;
-        height: 32px;
-    }
-
-    /* === Gallery Slide & Controls === */
-    .gallery-slide {
-        max-width: 95vw;
-        height: auto;
-    }
-
-    .gallery-img {
-        height: 200px;
-    }
-
-    .gallery-title {
-        font-size: 12px;
-    }
-
-    .gallery-nav-wrapper {
-        flex-direction: column;
-        gap: 10px;
-        padding: 10px;
-    }
-
-    .gallery-home {
-        position: static;
-        transform: none;
-        margin: 0 auto;
-    }
+  /* Audio button */
+  .audio-btn { width: 36px; height: 36px; font-size: 15px; }
 }
-.gallery-nav-wrapper button {
-    z-index: 1000;
-    touch-action: manipulation;
+
+/* ============================================================
+   RESPONSIVE — max-width: 400px (very small phones)
+   ============================================================ */
+@media (max-width: 400px) {
+  .gameboy { transform: scale(0.82); }
+  .neon-title { font-size: 11px; }
+  .gallery-title { font-size: 8px; }
+  .gallery-nav-wrapper { flex-direction: column; gap: 6px; align-items: center; }
+  .gallery-home { position: static; transform: none; }
+}
+
+/* ============================================================
+   TOUCH — ensure tap targets are big enough
+   ============================================================ */
+.btn,
+.gameboy-menu-item,
+.gallery-dot,
+.audio-btn {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
